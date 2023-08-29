@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls:*)",
+      "Bash(xargs -0 cat)",
+      "Bash(grep -v '^\\\\.$')",
+      "Bash(cmd.exe /c \"dir /b \\\\\"C:\\\\Projects\\\\Algorithm\\\\백준\\\\Bronze\\\\\" && echo --- && dir /b \\\\\"C:\\\\Projects\\\\Algorithm\\\\백준\\\\Silver\\\\\" | more +1 && echo --- && dir /b \\\\\"C:\\\\Projects\\\\Algorithm\\\\프로그래머스\\\\\"\")",
+      "Bash(powershell.exe -Command \"Get-ChildItem 'C:\\\\Projects\\\\Algorithm\\\\백준\\\\Bronze' | Select-Object Name\")"
+    ]
+  }
+}

@@ -1,0 +1,4 @@
+.env
+submissions.json
+__pycache__/
+*.pyc

@@ -1,0 +1,6 @@
+b=int(input())
+a=input()
+print(int(a[2])*b)
+print(int(a[1])*b)
+print(int(a[0])*b)
+print(int(a)*b)

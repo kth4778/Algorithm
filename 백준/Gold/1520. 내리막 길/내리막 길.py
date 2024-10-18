@@ -1,0 +1,30 @@
+import sys
+sys.setrecursionlimit(10 ** 5)
+input = sys.stdin.readline
+
+def dfs(y,x):
+    if y == N - 1 and x == M - 1:
+        answer[y][x] = 1
+        return
+    
+    if answer[y][x] != -1:
+        return 
+    
+    answer[y][x] = 0
+    
+    for i in range(4):
+        ny = y + dy[i]
+        nx = x + dx[i]
+        if 0 <= ny < N and 0 <= nx < M:
+            if maps[y][x] > maps[ny][nx]:
+                dfs(ny,nx)
+                answer[y][x] += answer[ny][nx]
+
+N,M = map(int,input().split())
+maps = [list(map(int,input().split())) for _ in range(N)]
+answer = [[-1 for _ in range(M)] for _ in range(N)]
+dx = [1,0,0,-1]
+dy = [0,1,-1,0]
+dfs(0,0)
+
+print(answer[0][0])

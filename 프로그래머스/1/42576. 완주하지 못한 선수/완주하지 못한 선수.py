@@ -1,16 +1,15 @@
 def solution(participant, completion):
-    d = {}
-
-    for name in participant:
-        if name not in d:
-            d[name] = 1
+    result = {}
+    for i in participant:
+        if i not in result:
+            result[i] = 1
         else:
-            d[name] += 1
+            result[i] += 1
     
-    for name in completion:
-        if d[name] == 1:
-            del d[name]
+    for i in completion:
+        if result[i] == 1:
+            del result[i]
         else:
-            d[name] -= 1
+            result[i] -= 1
     
-    return list(d)[0]
+    return list(result)[0]

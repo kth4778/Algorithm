@@ -1,8 +1,10 @@
-.env
-submissions.json
-__pycache__/
-*.pyc
-CLAUDE.md
-commit.py
-crawl.py
-requirements.txt
+# 모든 파일 무시
+*
+
+# 예외: 백준, 프로그래머스 폴더와 README.md 허용
+!백준/
+!백준/**
+!프로그래머스/
+!프로그래머스/**
+!README.md
+!.gitignore

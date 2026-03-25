@@ -17,6 +17,7 @@ load_dotenv()
 
 REPO_PATH   = os.getenv("REPO_PATH", os.path.dirname(os.path.abspath(__file__)))
 INPUT_FILE  = "submissions.json"
+SKIP_FILE   = "skipped.txt"
 
 # Windows 파일명에 사용할 수 없는 문자 → 대체 문자
 INVALID_CHARS = re.compile(r'[\\/:*?"<>|]')
@@ -95,6 +96,7 @@ def main():
     print(f"총 {len(submissions)}개 처리 시작\n")
     committed = 0
     skipped   = 0
+    skip_log  = []
 
     for sub in submissions:
         pid    = sub["problem_id"]
@@ -106,9 +108,27 @@ def main():
         # ── 폴더 경로 ──
         problem_dir = os.path.join(REPO_PATH, "백준", folder, f"{pid}. {title}")
 
+        # 소스코드 없으면 건너뜀
+        if not sub.get("code", "").strip():
+            reason = "소스코드 없음"
+            print(f"  [SKIP] #{pid} {title} ({reason})")
+            skip_log.append(f"#{pid} {title} | {reason}")
+            skipped += 1
+            continue
+
+        # 문제 제목 없으면 건너뜀
+        if not title:
+            reason = "문제 제목 없음"
+            print(f"  [SKIP] #{pid} ({reason})")
+            skip_log.append(f"#{pid} | {reason}")
+            skipped += 1
+            continue
+
         # 이미 존재하면 건너뜀
         if os.path.isdir(problem_dir):
-            print(f"  [SKIP] #{pid} {title} (이미 존재)")
+            reason = "이미 존재"
+            print(f"  [SKIP] #{pid} {title} ({reason})")
+            skip_log.append(f"#{pid} {title} | {reason}")
             skipped += 1
             continue
 
@@ -151,6 +171,13 @@ def main():
             committed += 1
         else:
             print(f"    [오류] git commit 실패: {commit_result.stderr}")
+
+    # 스킵 로그 저장
+    if skip_log:
+        with open(SKIP_FILE, "w", encoding="utf-8") as f:
+            f.write(f"총 {len(skip_log)}개 스킵\n\n")
+            f.write("\n".join(skip_log))
+        print(f"스킵 목록 → {SKIP_FILE}")
 
     print(f"\n완료: {committed}개 커밋, {skipped}개 건너뜀")
     print("push하려면: git push")

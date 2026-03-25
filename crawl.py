@@ -30,8 +30,8 @@ load_dotenv()
 BAEKJOON_ID  = os.getenv("BAEKJOON_ID")
 BAEKJOON_PW  = os.getenv("BAEKJOON_PW")
 OUTPUT_FILE  = "submissions.json"
-MAX_PAGES    = 1    # 테스트용: 1 = 첫 페이지만, 0 = 전체 수집
-MAX_PROBLEMS = 1    # 테스트용: 1 = 1개만, 0 = 전체 수집
+MAX_PAGES    = 0    # 0 = 전체 수집
+MAX_PROBLEMS = 0    # 0 = 전체 수집
 
 BASE_URL     = "https://www.acmicpc.net"
 SOLVED_AC    = "https://solved.ac/api/v3"
@@ -263,9 +263,6 @@ def get_source_code(driver: webdriver.Chrome, submission_id: str) -> str:
         print(f"    [CODE-ERROR] 로그인 페이지로 리다이렉트됨 - 세션 만료")
         return ""
 
-    # 페이지 로드 대기
-    time.sleep(2)
-
     try:
         WebDriverWait(driver, 15).until(
             EC.presence_of_element_located((By.CSS_SELECTOR, "textarea.codemirror-textarea"))
@@ -358,7 +355,6 @@ def main():
     driver = setup_driver()
     try:
         login(driver)
-        session = make_session(driver)
 
         # 1단계: 제출 목록 (Selenium으로 JS 렌더링 후 파싱)
         submissions = crawl_submissions(driver)
@@ -386,11 +382,12 @@ def main():
             prob = get_problem_info(driver, pid)
 
             result.append({**sub, **tier, **prob, "code": code})
-            time.sleep(DELAY)
 
-        # 4단계: JSON 저장
-        with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
-            json.dump(result, f, ensure_ascii=False, indent=2)
+            # 중간 저장 (오류 발생 시 복구 가능)
+            with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
+                json.dump(result, f, ensure_ascii=False, indent=2)
+
+            time.sleep(DELAY)
 
         print(f"\n완료! {OUTPUT_FILE} 에 {len(result)}개 저장됨")
 

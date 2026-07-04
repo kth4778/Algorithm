@@ -1,0 +1,2 @@
+def solution(food):
+    return ''.join([str(i) * (food[i] // 2) for i in range(1, len(food)) if food[i] // 2 > 0] + ["0"] + [str(i) * (food[i] // 2) for i in range(1, len(food)) if food[i] // 2 > 0][::-1])

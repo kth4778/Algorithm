@@ -1,15 +1,15 @@
 def solution(participant, completion):
-    result = {}
+    dict = {}
     for i in participant:
-        if i not in result:
-            result[i] = 1
+        if i not in dict:
+            dict[i] = 1
         else:
-            result[i] += 1
+            dict[i] += 1
     
     for i in completion:
-        if result[i] == 1:
-            del result[i]
+        if dict[i] == 1:
+            del dict[i]
         else:
-            result[i] -= 1
+            dict[i] -= 1
     
-    return list(result)[0]
+    return list(dict.keys())[0]

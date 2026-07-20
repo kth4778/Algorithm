@@ -1,42 +1,31 @@
-from collections import deque
-
 def solution(signals):
-    size = len(signals)
-    colors = ['green', 'yellow', 'red']
+    s = []
     
-    que = deque()
-    color_table = [[] for _ in range(size)]
+    for signal in signals:
+        s.append([])
+        
+        for _ in range(signal[0]):
+            s[-1].append('G')
+        for _ in range(signal[1]):
+            s[-1].append('Y')
+        for _ in range(signal[2]):
+            s[-1].append('R')
     
-    for i in range(size):
-        que.append([0, i])
-        for j in range(3):
-            for k in range(signals[i][j]):
-                color_table[i].append(colors[j])
+    count = 0
     
-    G = 0
-    Y = 0
-    R = 0
-    
-    while que:    
-        time, index = que.popleft()
-        if time == 20 ** 5:
+    while True:
+        if count == 10000000:
             return -1
         
-        color = color_table[index][time % sum(signals[index])]
-
-        if color == 'green':
-            G += 1
-        elif color == 'yellow':
-            Y += 1
-        else:
-            R += 1
+        r = []
+        count += 1
+        for i in s:
+            p = count % len(i)         
+            r.append(i[p - 1])
         
-        que.append([time + 1, index])
+        r = len([i for i in r if i == "Y"])
         
-        if index == size - 1:
-            if Y == size:
-                return time + 1
-            else:        
-                G = 0
-                Y = 0
-                R = 0
+        if r == len(s):
+            return count
+        
+        

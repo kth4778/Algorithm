@@ -1,40 +1,44 @@
 from collections import deque
+import copy
 
 def solution(message, spoiler_ranges):
-    new_spoiler = [False for _ in range(len(message))]
-    
-    for s, e in spoiler_ranges:
-        for i in range(s, e + 1):
-            new_spoiler[i] = True
-    
-    if message[0] == ' ':
-        index = 1
-    else:
-        index = 0
-    
-    lst = list(message.split())
-    
-    usageA = {}
-    usageB = deque()
-    
-    for i in lst:
-        switch = True
-        for j in range(index, index + len(i)):
-            if new_spoiler[j]:
-                usageB.append(i)
-                switch = False
-                break
-        if switch:
-            usageA[i] = True
-        index += len(i) + 1
-    
     answer = 0
+    que = deque()
+    cur_message = list(message)
+
+    for i in spoiler_ranges:
+        que.append(i)
+        for j in range(i[0], i[1] + 1):
+            if cur_message[j] != ' ':
+                cur_message[j] = '!'
+    d = {}
     
-    for _ in range(len(usageB)):
-        usage = usageB.popleft()
-        if usage not in usageA:
-            usageA[usage] = True
-            answer += 1
+    for s in (''.join(cur_message)).split():
+        if '!' not in s:
+            d[s] = True
     
+    while que:
+        s, e = que.popleft()
+        new_message = copy.deepcopy(cur_message)
+        
+        for i in range(s, e + 1):
+            new_message[i] = message[i]
+        
+        cur = [s for s in (''.join(cur_message)).split() if '!' not in s]
+        new = [s for s in (''.join(new_message)).split() if '!' not in s]
+        
+        p = []
+        
+        for i in new:
+            if i in cur:
+                cur.remove(i)
+            else:
+                p.append(i)
+        
+        for i in p:
+            if i not in d:
+                answer += 1
+                d[i] = True
+                
+        cur_message = new_message
     return answer
-            

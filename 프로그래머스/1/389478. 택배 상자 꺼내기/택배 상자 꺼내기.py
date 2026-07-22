@@ -1,43 +1,44 @@
-def solution(n,w,num):
-    lst = [[None for _ in range(w)] for _ in range(n // w + 1)]
-    number = 1
-    floor = 0
-    switch = False
+def solution(n, w, num):
+    answer = 0
+    c = w
     
-    while number <= n:
-        if not switch:
-            for i in range(w):
-                if number > n:
-                    break
-                lst[floor][i] = number
-                number += 1
+    lst = []
+    
+    for i in range(1, n + 1):
+        if c == w:
+            c = 0
+            lst.append([])
+            lst[-1].append(i)
         else:
-            for i in range(w - 1, -1, -1):
-                if number > n:
-                    break
-                lst[floor][i] = number
-                number += 1
-        floor += 1
-        switch = not switch
+            lst[-1].append(i)
+        c += 1
+        
+    for i in range(w - len(lst[-1])):
+        lst[-1].append(0)
+        
+    lst = lst[::-1]
     
-    y, x = 0, 0
-    p = False
+    for i in range(len(lst)-2, -1, -2):
+        lst[i] = lst[i][::-1]
     
-    for i in range(n // w + 1):
+    for i in range(len(lst)):
         for j in range(w):
             if lst[i][j] == num:
-                y, x = i, j
-                p = True
-                break
-        if p:
-            break
-    count = 0
-    
-    for i in range(y, n // w + 1):
-        if lst[i][x] != None:
-            count += 1
-        else:
-            break
-    
-    
-    return count
+                dy = i
+                dx = j
+                while True:
+                    answer += 1
+                    ny = dy - 1
+                    nx = dx
+                    if 0 <= ny < len(lst) and 0 <= nx < w:
+                        if lst[ny][nx] != 0:
+                            dy = ny
+                            dx = nx
+                        else:
+                            break
+                    else:
+                        break
+    return answer
+                    
+            
+    return -1
